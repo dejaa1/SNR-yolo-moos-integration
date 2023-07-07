@@ -3,8 +3,8 @@ import os
 import shutil
 
 # Specify the source directory and target directory
-src_dir = '/Users/logandelaar/Desktop/YOLO-moos/IMAGE_Processing/Rotated'
-target_dir = '/Users/logandelaar/Desktop/YOLO-moos/IMAGE_Processing/Filtered'
+src_dir = '/Path/To/Source/Photo/Folder'
+target_dir = '/Path/To/Save/Folder'
 
 # Make sure the target directory exists 
 os.makedirs(target_dir, exist_ok=True)
