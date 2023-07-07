@@ -2,10 +2,10 @@ import os
 import shutil
 
 # Source folder containing the original .jpg photos
-source_folder = "/Users/logandelaar/Desktop/YOLO-moos/IMAGE_Processing/Filtered"
+source_folder = "/Path/To/Photo/Folder"
 
 # Destination folder to save the renamed .jpg photos
-destination_folder = "/Users/logandelaar/Desktop/YOLO-moos/IMAGE_Processing/Renamed"
+destination_folder = "/Path/To/Save/Folder"
 
 # Create the destination folder if it doesn't exist
 os.makedirs(destination_folder, exist_ok=True)
