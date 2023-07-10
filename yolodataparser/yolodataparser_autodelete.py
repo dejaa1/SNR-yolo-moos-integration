@@ -2,7 +2,7 @@ import glob
 import os
 
 # Change 'your_directory_path' to your directory path
-directory_path = '/Users/logandelaar/Desktop/Search And Rescue.v3i.yolov5pytorch/train/labels'  
+directory_path = 'path/to/lables/folder/in/downloaded/roboflow/folder'  
 
 # Use glob to get all .txt files in the directory
 for filename in glob.glob(os.path.join(directory_path, '*.txt')):
