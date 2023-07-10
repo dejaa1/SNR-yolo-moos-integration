@@ -17,7 +17,7 @@ homography_matrix, _ = cv2.findHomography(pixel_coords.T, real_world_coords.T, m
 # Get user input for the point on the cover image
 x, y = float(sys.argv[1]), float(sys.argv[2])
 
-# Check if y is less than 363
+# Check if y is less than 364
 if y < 364:
     print("Invalid input. Y coordinate should not be less than 364.")
     sys.exit(1)
