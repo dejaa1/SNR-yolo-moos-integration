@@ -17,7 +17,7 @@ homography_matrix, _ = cv2.findHomography(pixel_coords.T, real_world_coords.T, m
 # Get user input for the point on the cover image
 x, y = float(sys.argv[1]), float(sys.argv[2])
 
-# Check if y is less than 364
+# Check if y is less than 363
 if y < 364:
     print("Invalid input. Y coordinate should not be less than 364.")
     sys.exit(1)
@@ -28,6 +28,5 @@ cover_point = np.array([[x, y, 1]], dtype=np.float32).T
 undistorted_point = np.dot(homography_matrix, cover_point)
 undistorted_point /= undistorted_point[2]
 
-# Print the corresponding point in meters
-print("Undistorted point (meters):")
-print(f"X = {undistorted_point[0, 0]:.2f} meters, Y = {undistorted_point[1, 0]:.2f} meters")
+# Print the corresponding point in meters in a format that the C++ program can parse
+print(f"{undistorted_point[0, 0]:.2f},{undistorted_point[1, 0]:.2f}")
