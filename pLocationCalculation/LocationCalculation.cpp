@@ -19,6 +19,10 @@ LocationCalculation::LocationCalculation()
 {
   current_x = 0;
   current_y = 0;
+  mob_box_x = 0;
+  mob_box_y = 0;
+  prev_mob_box_x = 0;
+  prev_mob_box_y = 0;
 }
 
 //---------------------------------------------------------
@@ -52,29 +56,46 @@ bool LocationCalculation::OnNewMail(MOOSMSG_LIST &NewMail)
       current_heading = msg.GetDouble();
     }
 
-    // if MOB (Man Over Board) is detected
-    // MOB_PIXEL is the pixel coords of the middle of the bottom side of the bounding box in the image with the MOB
-    if (msg.GetKey() == "MOB_PIXEL") {
-
-      // 1. Calculate distance from camera to human 
-      std::string command = "python homography.py " + std::to_string(x) + " " + std::to_string(y);
-			std::string result = exec(command.c_str());
-
-      // 2. Get GPS coords of robot
-
-			// 3. Find coords of human
-
-			// 4. Publish MOOS variable with estimated distance and human coords
-
-
+    // if MOB (Man Over Board) is detected then MOB_BOX_X and Y will be posted
+    // MOB_BOX_X and Y are the coords of the bottom middle of the bounding box in the image with a MOB detected.
+    if (msg.GetKey() == "MOB_BOX_X") {
+        mob_box_x = msg.GetDouble();
     }
 
+    if (msg.GetKey() == "MOB_BOX_Y") {
+        mob_box_y = msg.GetDouble();
+    }
 
+    // if new mail for both MOB_BOX_X and MOB_BOX_Y came then proceed with calculations
+    if(! ( (mob_box_y == prev_mob_box_y) && (mob_box_x == prev_mob_box_x) ) ) {
+        
+        /// Calculate distance from camera to human ///
+        std::string command = "python homography.py " + std::to_string(mob_box_x) + " " + std::to_string(mob_box_y);
+	    std::string result = exec(command.c_str())
+        
+        // parse script result for x and y 
+        std::istringstream ss(result);
+        std::string token;
+        
+        std::getline(ss, token, ',');
+        double x = std::stod(token);
+
+        std::getline(ss, token, ',');
+        double y = std::stod(token);
+        
+
+        ///  publish MOOS variables with relative distance to MOB when MOB is scene ///
+        // x and y is from robot pov. Y is how far out it is, and x is how left and right it is
+        // yolo app will publish a boolean regarding whether MOB is found or not
+        Notify("RELATIVE_MOB_X", x);
+        Notify ("RELATIVE_MOB_Y", y);
+    }
+    
+   }
      
   }
-    
-}
 
+// for parsing python script output
 std::string exec(const char* cmd) {
 
 	std::array<char, 128> buffer;
@@ -157,6 +178,8 @@ void LocationCalculation::registerVariables()
   Register("NAV_X", 0);
   Register("NAV_Y", 0);
   Register("NAV_HEADING", 0);
+  Register("MOB_BOX_X", 0 );
+  Register("MOB_BOX_Y", 0 );
 }
 
 

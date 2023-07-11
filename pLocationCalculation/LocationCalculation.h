@@ -34,7 +34,10 @@ class LocationCalculation : public AppCastingMOOSApp
   double current_x;
   double current_y;
   double current_heading;
-
+  double mob_box_y;
+  double mob_box_x;
+  double prev_mob_box_x;
+  double prev_mob_box_y;
 };
 
 #endif 
