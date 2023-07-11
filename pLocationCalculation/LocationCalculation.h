@@ -21,6 +21,9 @@ class LocationCalculation : public AppCastingMOOSApp
    bool Iterate();
    bool OnConnectToServer();
    bool OnStartUp();
+   std::string exec(const char* cmd);
+   
+   
 
  protected: // Standard AppCastingMOOSApp function to overload 
    bool buildReport();
@@ -29,6 +32,7 @@ class LocationCalculation : public AppCastingMOOSApp
    void registerVariables();
 
  private: // Configuration variables
+ 
 
  private: // State variables
   double current_x;

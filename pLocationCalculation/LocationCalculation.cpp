@@ -9,6 +9,7 @@
 #include "MBUtils.h"
 #include "ACTable.h"
 #include "LocationCalculation.h"
+#include <array>
 
 using namespace std;
 
@@ -68,10 +69,9 @@ bool LocationCalculation::OnNewMail(MOOSMSG_LIST &NewMail)
 
     // if new mail for both MOB_BOX_X and MOB_BOX_Y came then proceed with calculations
     if(! ( (mob_box_y == prev_mob_box_y) && (mob_box_x == prev_mob_box_x) ) ) {
-        
         /// Calculate distance from camera to human ///
         std::string command = "python homography.py " + std::to_string(mob_box_x) + " " + std::to_string(mob_box_y);
-	    std::string result = exec(command.c_str())
+	      std::string result = exec(command.c_str()); 
         
         // parse script result for x and y 
         std::istringstream ss(result);
@@ -92,11 +92,13 @@ bool LocationCalculation::OnNewMail(MOOSMSG_LIST &NewMail)
     }
     
    }
+
+   return (true);
      
   }
 
 // for parsing python script output
-std::string exec(const char* cmd) {
+std::string LocationCalculation::exec(const char* cmd) {
 
 	std::array<char, 128> buffer;
 	std::string result;
