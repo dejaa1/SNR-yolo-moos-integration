@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pYOLO config block
+
+ProcessConfig = pYOLO
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
