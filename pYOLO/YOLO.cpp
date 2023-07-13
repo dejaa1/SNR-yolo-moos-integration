@@ -20,8 +20,9 @@
 
 
 using namespace std;
-std::atomic<int> g_mob_box_x;
-std::atomic<int> g_mob_box_y;
+std::atomic<int> g_mob_box_x(-1);
+std::atomic<int> g_mob_box_y(-1);
+std::atomic<bool> g_mob_detected_bool(false);
 
 //---------------------------------------------------------
 // Constructor()
@@ -35,6 +36,7 @@ YOLO::YOLO()
   mob_box_y= -1;
   class_label = -1;
   confidence = -1;
+  found =false;
 }
 
 //---------------------------------------------------------
@@ -103,6 +105,7 @@ void getCoords() {
         if (temp_class_label_val == MOB_CLASS) {
         g_mob_box_x = temp_x;
         g_mob_box_y = temp_y;
+        g_mob_detected_bool = true;
         }
     }
     fifo_file.close();
@@ -115,10 +118,14 @@ bool YOLO::Iterate()
   // Do your thing here!
     mob_box_x = g_mob_box_x;
     mob_box_y = g_mob_box_y;
+    found = g_mob_detected_bool;
+
     Notify("MOB_X",  mob_box_x);
     Notify("MOB_Y",  mob_box_y);
-    Notify("CLASS_LABEL", class_label);
-    Notify("CONFIDENCE", confidence);
+    //Notify("CLASS_LABEL", class_label);
+    //Notify("CONFIDENCE", confidence);
+    Notify("MOB_DETECTED", found);
+
     
 
   AppCastingMOOSApp::PostReport();
@@ -162,8 +169,17 @@ bool YOLO::OnStartUp()
   std::string input_source = "0";
 
   std::string command = "mkfifo mypipe; (python !python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source " + input_source + " --save-txt | tee mypipe > /dev/null &) && ./YOLO < mypipe; rm mypipe";
-  system(command.c_str());
-  
+  std::thread commandThread([command]() {
+        system(command.c_str());
+    });
+
+    commandThread.detach();
+    
+    std::thread getCoordsThread(getCoords);
+    getCoordsThread.detach();
+
+
+
   return(true);
   
   // system("python3 yolo_main.py");

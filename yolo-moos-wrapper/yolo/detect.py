@@ -167,7 +167,7 @@ def run(
                         with open(f'{txt_path}.txt', 'a') as f:
                             f.write(('%g ' * len(line)).rstrip() % line + '\n')
                          # reformat to x1y1x2y2
-                        print(float(conf), int((xyxy[0,1] + xyxy[0,0])/2), int(xyxy[0, 3]))  # label format)
+                        print(int(cls), int((xyxy[0,1] + xyxy[0,0])/2), int(xyxy[0, 3]))  # label format)
 
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class

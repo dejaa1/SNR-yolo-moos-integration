@@ -29,8 +29,14 @@ class YOLO : public AppCastingMOOSApp
    void registerVariables();
 
  private: // Configuration variables
+  int class_label;
 
  private: // State variables
+  bool found;
+  int mob_box_x;
+  int mob_box_y;
+  double confidence;
+
 };
 
 #endif 
