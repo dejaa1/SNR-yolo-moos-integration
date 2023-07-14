@@ -182,8 +182,7 @@ bool YOLO::OnStartUp()
   }
   
   registerVariables();
-  std::string input_source = "0";
-
+  
   // std::string command = "mkfifo mypipe; (python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source " + input_source + " --save-txt | tee mypipe > /dev/null &) && ./YOLO < mypipe; rm mypipe";
   // std::thread commandThread([command]() {
   //       system(command.c_str());
@@ -195,12 +194,13 @@ bool YOLO::OnStartUp()
   //   getCoordsThread.detach();
 
 pid_t childPid = fork();
+    std::string input_source = "0";
 
     // Check if it's the child process
     if (childPid == 0)
-    {
+    {   
         // Run the Python script in a separate terminal
-        std::string command = "gnome-terminal -- python yolo/detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source " + input_source + " --save-txt";  // Replace with the actual path to your Python script
+        std::string command = "gnome-terminal -- python pYOLO/yolo/detect.py --weights pYOLO/yolo/bestSNRweights.pt --img 640 --conf 0.25 --source " + input_source + " --save-txt"; 
 
         // Execute the command using exec
         if (execl("/bin/sh", "sh", "-c", command, NULL) == -1)
