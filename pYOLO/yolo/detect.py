@@ -79,7 +79,23 @@ def run(
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
-):
+):  
+    #############################################
+    ##### This path needs to be changed for each person pc and the robots and can be done via a config file #####
+    fifo_path = "yolo/pipe/yolo_fifo"
+    if not os.path.exists(fifo_path):
+        os.mkfifo(fifo_path)
+    #############################################
+
+    
+
+
+
+
+
+
+
+    ############################################
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
     is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
@@ -167,7 +183,13 @@ def run(
                         with open(f'{txt_path}.txt', 'a') as f:
                             f.write(('%g ' * len(line)).rstrip() % line + '\n')
                          # reformat to x1y1x2y2
-                        print(int(cls), int((xyxy[0,1] + xyxy[0,0])/2), int(xyxy[0, 3]))  # label format)
+                        with open(fifo_path, "w") as fifo:
+                            coords_line = int(cls), int((xyxy[0,1] + xyxy[0,0])/2), int(xyxy[0, 3])
+                            fifo.write(coords_line + "\n")
+                            
+
+
+
 
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
