@@ -168,13 +168,13 @@ bool YOLO::OnStartUp()
   registerVariables();
   std::string input_source = "0";
 
-  std::string command = "mkfifo mypipe; (python !python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source " + input_source + " --save-txt | tee mypipe > /dev/null &) && ./YOLO < mypipe; rm mypipe";
+  std::string command = "mkfifo mypipe; (python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source " + input_source + " --save-txt | tee mypipe > /dev/null &) && ./YOLO < mypipe; rm mypipe";
   std::thread commandThread([command]() {
         system(command.c_str());
     });
 
     commandThread.detach();
-    
+
     std::thread getCoordsThread(getCoords);
     getCoordsThread.detach();
 
