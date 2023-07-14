@@ -118,6 +118,9 @@ void getCoords() {
         g_mob_box_y = temp_y;
         g_mob_detected_bool = true;
         }
+        else{
+          g_mob_detected_bool = false;
+        }
     }
     fifo_file.close();
 }
@@ -197,7 +200,7 @@ pid_t childPid = fork();
     if (childPid == 0)
     {
         // Run the Python script in a separate terminal
-        std::string command = "gnome-terminal -- python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source " + input_source + " --save-txt";  // Replace with the actual path to your Python script
+        std::string command = "gnome-terminal -- python yolo/detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source " + input_source + " --save-txt";  // Replace with the actual path to your Python script
 
         // Execute the command using exec
         if (execl("/bin/sh", "sh", "-c", command, NULL) == -1)
