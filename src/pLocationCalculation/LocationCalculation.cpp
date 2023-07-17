@@ -97,6 +97,14 @@ bool LocationCalculation::OnNewMail(MOOSMSG_LIST &NewMail)
         // yolo app will publish a boolean regarding whether MOB is found or not
         Notify("RELATIVE_MOB_X",  x);
         Notify ("RELATIVE_MOB_Y", y);
+        // calculate field relative mobx and moby and publish it
+        // NAV_Y + sqrt( relative_MOB_X^2 + relative_MOB_Y^2) * sin(90-(theta+tan(relativemobobx/relativemoby)))
+        Notify ("MOB_POSITION_X", 
+          current_x + sqrt( (x * x) + (y * y) )  * cos(90 - (current_heading + tan(x / y)))
+        );
+        Notify("MOB_position_Y", 
+          current_y + sqrt( (x * x) + (y * y) )  * sin(90 - (current_heading + tan(x / y)))
+        );
 
         prev_mob_box_x = mob_box_x;
         prev_mob_box_y = mob_box_y;
