@@ -10,6 +10,7 @@
 
 #include "MOOS/libMOOS/Thirdparty/AppCasting/AppCastingMOOSApp.h"
 
+
 class YOLO : public AppCastingMOOSApp
 {
  public:
@@ -28,14 +29,14 @@ class YOLO : public AppCastingMOOSApp
  protected:
    void registerVariables();
 
- private: // Configuration variables
-  int class_label;
+ 
 
  private: // State variables
   bool found;
   int mob_box_x;
   int mob_box_y;
-  double confidence;
+  float confidence;
+  int class_label;
 
 };
 

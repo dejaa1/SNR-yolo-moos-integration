@@ -64,6 +64,7 @@ def run(
         save_txt=False,  # save results to *.txt
         save_conf=False,  # save confidences in --save-txt labels
         save_crop=False,  # save cropped prediction boxes
+        output_moos = False, #output to moos required for yolo-moos integration
         nosave=False,  # do not save images/videos
         classes=None,  # filter by class: --class 0, or --class 0 2 3
         agnostic_nms=False,  # class-agnostic NMS
@@ -86,10 +87,10 @@ def run(
     #############################################
                             
     fifo_path = "src/pYOLO/yolo/pipe/yolo_fifo"
-    fifo_abs_path = "/home/alex/moos-ivp-alex/src/pYOLO/yolo/pipe/yolo_fifo"
+    fifo_abs_path = "/home/adeja/CompVision/repos/SNR-yolo-moos-integration/src/pYOLO/yolo/pipe/yolo_fifo"
     
-    if not os.path.exists(fifo_abs_path):
-        os.mkfifo(fifo_abs_path)
+    if not os.path.exists(fifo_path):
+        os.mkfifo(fifo_path)
 
     #print("this is the fifo path: ", fifo_path)
     
@@ -184,26 +185,25 @@ def run(
                          # reformat to x1y1x2y2
                         
                         xyxy_list = torch.tensor(xyxy).view(1, 4).view(-1).tolist()
-                        coords_line = coords_line = str(int(cls)) + " " + str(int((xyxy_list[0] + xyxy_list[2]) / 2)) + " " + str(int(xyxy_list[3]))
+                        coords_line = str(int(cls)) + " " + str(float(conf)) + " " + str(int((xyxy_list[0] + xyxy_list[2]) / 2)) + " " + str(int(xyxy_list[3]))
+                        print(coords_line)
+                        # with open(fifo_abs_path, "w") as fifo:
+                            
+                        #     fifo.write(coords_line + "\n")
+                            
+                        #     fifo.flush()
 
-                        # print(coords_line)
-                        with open(fifo_abs_path, "w") as fifo:
+  #########################################################################################################################################################################                      
+                    if output_moos:
+                        xyxy_list = torch.tensor(xyxy).view(1, 4).view(-1).tolist()
+                        coords_line = str(int(cls)) + " " + str(float(conf)) + " " + str(int((xyxy_list[0] + xyxy_list[2]) / 2)) + " " + str(int(xyxy_list[3]))
+                        with open(fifo_path, "w") as fifo:
                             
                             fifo.write(coords_line + "\n")
                             
                             fifo.flush()
                         
-                        #print(coords_line)
-                        
-                        ### From top left (0,0) its x1,y1,x2,y2 -> [0], [1], [2], [3]
-                        ### to find middle bottom = x: int(x1 + x2)/2, y: int(y2)
-                       # print(int(cls), int((xyxy_list[0] + xyxy_list[2])/2), int(xyxy_list[3]))
-
-                        
-                            
-
-
-
+ #############################################################################################################################################################################                       
 
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
@@ -283,6 +283,7 @@ def parse_opt():
     parser.add_argument('--half', action='store_true', help='use FP16 half-precision inference')
     parser.add_argument('--dnn', action='store_true', help='use OpenCV DNN for ONNX inference')
     parser.add_argument('--vid-stride', type=int, default=1, help='video frame-rate stride')
+    parser.add_argument('--output-moos', action='store_true', help='required to output to pipe fifo')
     opt = parser.parse_args()
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
     print_args(vars(opt))

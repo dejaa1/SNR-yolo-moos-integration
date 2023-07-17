@@ -3,7 +3,7 @@
 
 ProcessConfig = pYOLO
 {
-   AppTick   = 8
-   CommsTick = 8
+   AppTick   = 16
+   CommsTick = 16
 }
 

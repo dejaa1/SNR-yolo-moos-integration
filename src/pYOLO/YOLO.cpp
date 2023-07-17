@@ -23,12 +23,13 @@
 
 
 using namespace std;
-std::atomic<int> g_mob_box_x(-1);
-std::atomic<int> g_mob_box_y(-1);
-std::atomic<bool> g_mob_detected_bool(false);
+// std::atomic<int> g_mob_box_x(-1);
+// std::atomic<int> g_mob_box_y(-1);
+// std::atomic<bool> g_mob_detected_bool(false);
 std::string running_check = "Not Running";
 std::string fifo_open = "Not Open";
 std::string left_newmail = "Did not leave NewMail";
+std::chrono::steady_clock::time_point lastTrueTime;
 
 //---------------------------------------------------------
 // Constructor()
@@ -41,7 +42,7 @@ YOLO::YOLO()
   mob_box_x = -1;
   mob_box_y= -1;
   class_label = -1;
-  confidence = -1;
+  confidence = 0.0f;
   found =false;
 }
 
@@ -101,9 +102,9 @@ bool YOLO::OnConnectToServer()
 // Procedure: Iterate()
 //            happens AppTick times per second
 
+void NewGetCoords(bool &found_bool, int & class_val, float & conf, int & x, int &y)
+{
 
-
-void getCoords() {
     std::string fifoPath = "src/pYOLO/yolo/pipe/yolo_fifo";
     std::ifstream fifo_file(fifoPath);
     std::string input;
@@ -121,42 +122,88 @@ void getCoords() {
         cout << input << endl;
 
         std::istringstream iss(input);
-        int temp_class_label_val, temp_x, temp_y;
-        iss >> temp_class_label_val >> temp_x >> temp_y;
-        if (temp_class_label_val == MOB_CLASS) {
-        g_mob_box_x = temp_x;
-        g_mob_box_y = temp_y;
-        g_mob_detected_bool = true;
+        
+        iss >> class_val >> conf >> x >> y;
+        if (class_val == LIFEVEST_CLASS) {
+        found_bool = true;
+        lastTrueTime = std::chrono::steady_clock::now();
+        //std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
         }
         else{
-          g_mob_detected_bool = false;
+          
           fifo_open = "Not Open";
         }
     }
     fifo_file.close();
+
 }
+// void getCoords() {
+//     std::string fifoPath = "src/pYOLO/yolo/pipe/yolo_fifo";
+//     std::ifstream fifo_file(fifoPath);
+//     std::string input;
+
+//     if (!fifo_file.is_open())
+//     {
+//         std::cerr << "Failed to open the named pipe (FIFO).\n";
+
+//         return;
+//     }
+//     if (std::getline(fifo_file, input)) {
+//         // Process the input using the parser
+//         // Update the global variables directly
+//         fifo_open = "working";
+//         // cout << input << endl;
+
+//         std::istringstream iss(input);
+//         int temp_class_label_val, temp_x, temp_y;
+//         iss >> temp_class_label_val >> temp_x >> temp_y;
+//         if (temp_class_label_val == MOB_CLASS) {
+//         g_mob_box_x = temp_x;
+//         g_mob_box_y = temp_y;
+//         g_mob_detected_bool = true;
+//         }
+//         else{
+//           g_mob_detected_bool = false;
+//           fifo_open = "Not Open";
+//         }
+//     }
+//     fifo_file.close();
+// }
 
 
 bool YOLO::Iterate()
 {
-  AppCastingMOOSApp::Iterate();
+  AppCastingMOOSApp::Iterate(); 
   // Do your thing here!
-    getCoords();
+    
+    NewGetCoords(found, class_label, confidence, mob_box_x, mob_box_y);
+    /// if difff btwen tlast and now > 500 moiloise then detected = flase
+std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+  std::chrono::duration<double> duration = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - lastTrueTime);
+  double elapsedSeconds = duration.count();
+
+
+    cout<< duration.count() << endl;
+
+    if (found && elapsedSeconds >= 0.5) {
+
+      found = false;
+    }
+
     left_newmail = "Left NewMail";
 
-    mob_box_x = g_mob_box_x;
-    mob_box_y = g_mob_box_y;
-    found = g_mob_detected_bool;
 
-    Notify("MOB_X",  mob_box_x);
-    Notify("MOB_Y",  mob_box_y);
+    Notify("MOB_BOX_X",  mob_box_x);
+    Notify("MOB_BOX_Y",  mob_box_y);
     //Notify("CLASS_LABEL", class_label);
     //Notify("CONFIDENCE", confidence);
     Notify("MOB_DETECTED", found);
+    Notify("MOB_CONF", confidence);
+    Notify("CLASS_LABEL", class_label);
 
-    
 
   AppCastingMOOSApp::PostReport();
+
   return(true);
 }
 
@@ -174,14 +221,14 @@ void runPythonScript()
             command,
             scriptPath,
             "--weights",
-            "src/pYOLO/yolo/yolov5s.pt",
+            "src/pYOLO/yolo/custom_model/best.pt",
             "--img",
             "640",
             "--conf",
             "0.25",
             "--source",
             "0",
-            "--save-txt",
+            "--output-moos",
             NULL
         };
 
@@ -271,7 +318,8 @@ bool YOLO::OnStartUp()
   ///python src/pYOLO/yolo/detect.py --weights src/pYOLO/yolo/yolov5s.pt --img 640 --conf 0.25 --source 0 --save-txt
  
   runPythonScript();
-  sleep(10);
+
+  sleep(7);
 
   return(true);
   

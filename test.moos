@@ -1,0 +1,29 @@
+ServerHost = localhost
+ ServerPort = 9000
+ Community  = alpha
+
+ ProcessConfig = ANTLER   
+ {   
+   MSBetweenLaunches = 200
+
+   Run = MOOSDB     @ NewConsole = false
+   Run = uXMS       @ NewConsole = true
+   Run = pYOLO     @ NewConsole = true
+ }
+
+ ProcessConfig = uXMS
+ {
+   AppTick   = 4
+   CommsTick = 4
+
+   VAR            = DB_CLIENTS, DB_TIME, MOB_BOX_X, MOB_BOX_Y, MOB_DETECTED, MOB_CONF, CLASS_LABEL
+   DISPLAY_SOURCE = true
+   DISPLAY_TIME   = true
+   COLOR_MAP      = DB_CLIENTS, red
+ }  
+
+ ProcessConfig = pYOLO {
+
+    AppTick = 16
+    CommsTick = 16
+ }
