@@ -28,16 +28,6 @@ Usage - formats:
                                  yolov5s_paddle_model       # PaddlePaddle
 """
 
-""" 
-# This code is for testing that the IPC between the Python and C++ works
-import time
-import random
-
-while 1 > 0:
-    print(f'0 {random.randint(0,640)} {random.randint(0,360)} {random.randint(640,1280)} {random.randint(360,720)}', flush=True)
-    time.sleep(random.random() * 3.0)
-"""
-
 import argparse
 import os
 import platform
@@ -55,7 +45,7 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 from models.common import DetectMultiBackend
 from utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
 from utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
-                           increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
+                           increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xywh2xyxy, xyxy2xywh)
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import select_device, smart_inference_mode
 
@@ -89,7 +79,22 @@ def run(
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
-):
+):  
+    #############################################
+    ##### This path needs to be changed for each person pc and the robots and can be done via a config file #####
+    
+    #############################################
+                            
+    fifo_path = "src/pYOLO/yolo/pipe/yolo_fifo"
+    fifo_abs_path = "/home/alex/moos-ivp-alex/src/pYOLO/yolo/pipe/yolo_fifo"
+    
+    if not os.path.exists(fifo_abs_path):
+        os.mkfifo(fifo_abs_path)
+
+    #print("this is the fifo path: ", fifo_path)
+    
+
+    ############################################
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
     is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
@@ -177,8 +182,28 @@ def run(
                         with open(f'{txt_path}.txt', 'a') as f:
                             f.write(('%g ' * len(line)).rstrip() % line + '\n')
                          # reformat to x1y1x2y2
-                         
-                        print(int(cls), int(xyxy[0].item()), int(xyxy[1].item()), int(xyxy[2].item()), int(xyxy[3].item()), flush=True)  # label format)
+                        
+                        xyxy_list = torch.tensor(xyxy).view(1, 4).view(-1).tolist()
+                        coords_line = coords_line = str(int(cls)) + " " + str(int((xyxy_list[0] + xyxy_list[2]) / 2)) + " " + str(int(xyxy_list[3]))
+
+                        # print(coords_line)
+                        with open(fifo_abs_path, "w") as fifo:
+                            
+                            fifo.write(coords_line + "\n")
+                            
+                            fifo.flush()
+                        
+                        #print(coords_line)
+                        
+                        ### From top left (0,0) its x1,y1,x2,y2 -> [0], [1], [2], [3]
+                        ### to find middle bottom = x: int(x1 + x2)/2, y: int(y2)
+                       # print(int(cls), int((xyxy_list[0] + xyxy_list[2])/2), int(xyxy_list[3]))
+
+                        
+                            
+
+
+
 
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
