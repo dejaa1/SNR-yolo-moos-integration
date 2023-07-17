@@ -9,6 +9,9 @@
 *.blog
 *.ylog
 
+# allow
+!/CMakeLists.txt
+
 # Compiled Object files
 *.slo
 *.lo
