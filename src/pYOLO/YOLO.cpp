@@ -15,9 +15,10 @@
 #include <fstream>
 #include <thread>
 #include <future>
-#include <atomic>
 #include <array>
 #include <cstdlib>
+#include <mutex>
+
 
 using namespace std;
 
@@ -87,8 +88,9 @@ bool YOLO::OnConnectToServer()
 //---------------------------------------------------------
 // Procedure: CoordsFIFOThread()
 //            handle the incoming data from the python YOLO detector
+static std::mutex g_mob_box_mutex;
 
-static std::atomic<YOLOBox> g_mob_box{};
+static YOLOBox g_mob_box{};
 
 static void CoordsFIFOThread()
 {
@@ -124,7 +126,8 @@ static void CoordsFIFOThread()
         switch (fifo_box.GetLabel())
         {
         case MOB_CLASS:
-          g_mob_box.store(fifo_box);
+          const std::lock_guard<std::mutex> lock{g_mob_box_mutex};
+          g_mob_box = fifo_box;
           break;
         default:
           std::cerr << "Unknown Classification Label: " << fifo_box.GetLabel() << std::endl;
@@ -147,7 +150,8 @@ bool YOLO::Iterate()
   AppCastingMOOSApp::Iterate();
 
   // Do your thing here!
-  mob_box = g_mob_box.load();
+  const std::lock_guard<std::mutex> lock{g_mob_box_mutex};
+  mob_box = g_mob_box;
   
   bool detected = mob_box.GetAgeSeconds() < MAX_FIFO_AGE;
   Notify("MOB_BOX_X", mob_box.BoxX());
