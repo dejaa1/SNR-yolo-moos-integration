@@ -150,8 +150,8 @@ bool YOLO::Iterate()
   mob_box = g_mob_box.load();
   
   bool detected = mob_box.GetAgeSeconds() < MAX_FIFO_AGE;
-  Notify("MOB_X", mob_box.BoxX());
-  Notify("MOB_Y", mob_box.BoxY());
+  Notify("MOB_BOX_X", mob_box.BoxX());
+  Notify("MOB_BOX_Y", mob_box.BoxY());
   Notify("MOB_DETECTED", detected);
   Notify("MOB_AGE", mob_box.GetAgeSeconds());
 
