@@ -1,2 +1,0 @@
-gngqijqjfiplol
-sugma 

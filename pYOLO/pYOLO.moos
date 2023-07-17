@@ -1,9 +1,0 @@
-//------------------------------------------------
-// pYOLO config block
-
-ProcessConfig = pYOLO
-{
-   AppTick   = 8
-   CommsTick = 8
-}
-
