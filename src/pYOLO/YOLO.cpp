@@ -30,6 +30,9 @@ std::string running_check = "Not Running";
 std::string fifo_open = "Not Open";
 std::string left_newmail = "Did not leave NewMail";
 std::chrono::steady_clock::time_point lastTrueTime;
+std::chrono::steady_clock::time_point lastFalseTime;
+std::chrono::steady_clock::time_point since_program_start = std::chrono::steady_clock::now();
+double mtime;
 
 //---------------------------------------------------------
 // Constructor()
@@ -75,6 +78,10 @@ bool YOLO::OnNewMail(MOOSMSG_LIST &NewMail)
     bool   mdbl  = msg.IsDouble();
     bool   mstr  = msg.IsString();
 #endif
+      
+    
+    mtime = msg.GetTime();
+    cout << mtime << endl;
 
      if(key == "FOO") 
        cout << "great!";
@@ -108,7 +115,7 @@ void NewGetCoords(bool &found_bool, int & class_val, float & conf, int & x, int 
     std::string fifoPath = "src/pYOLO/yolo/pipe/yolo_fifo";
     std::ifstream fifo_file(fifoPath);
     std::string input;
-
+    
     if (!fifo_file.is_open())
     {
         std::cerr << "Failed to open the named pipe (FIFO).\n";
@@ -119,22 +126,26 @@ void NewGetCoords(bool &found_bool, int & class_val, float & conf, int & x, int 
         // Process the input using the parser
         // Update the global variables directly
         fifo_open = "working";
-        cout << input << endl;
+        
 
         std::istringstream iss(input);
         
         iss >> class_val >> conf >> x >> y;
         if (class_val == LIFEVEST_CLASS) {
         found_bool = true;
-        cout << "BRUHHHHH WE IN THE BOOL CHSANGER NOW" << endl;
+        
         
         //std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
         }
         else{
           
           fifo_open = "Not Open";
+          found_bool = false;
+
         }
     }
+
+
     fifo_file.close();
 
 }
@@ -176,15 +187,17 @@ bool YOLO::Iterate()
 {
   AppCastingMOOSApp::Iterate(); 
   // Do your thing here!
-    lastTrueTime = std::chrono::steady_clock::now();
+
+     lastTrueTime = std::chrono::steady_clock::now();
+    
     NewGetCoords(found, class_label, confidence, mob_box_x, mob_box_y);
-    /// if difff btwen tlast and now > 500 moiloise then detected = flase
-std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
-  std::chrono::duration<double> duration = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - lastTrueTime);
-  double elapsedSeconds = duration.count();
+    //// if difff btwen tlast and now > 500 moiloise then detected = flase
+  
+    std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+    std::chrono::duration<double> duration = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - lastTrueTime);
+    double elapsedSeconds = duration.count();
 
-
-    cout<< duration.count() << endl;
+    //cout<< duration.count() << endl; 
 
     if (found && elapsedSeconds >= 0.5) {
 
