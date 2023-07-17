@@ -11,6 +11,7 @@
 
 # allow
 !/CMakeLists.txt
+!src/CMakeLists.txt
 
 # Compiled Object files
 *.slo
