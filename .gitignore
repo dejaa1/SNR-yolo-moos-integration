@@ -12,6 +12,13 @@
 # allow
 !/CMakeLists.txt
 !src/CMakeLists.txt
+!src/pYOLO/CMakeLists.txt
+!src/pXRelayTest/CMakeLists.txt
+!src/pOdometry/CMakeLists.txt
+!src/pLocationCalculation/CMakeLists.txt
+!src/pExampleApp/CMakeLists.txt
+!src/lib_behaviors-test/CMakeLists.txt
+!src/build/CMakeCache.txt
 
 # Compiled Object files
 *.slo
