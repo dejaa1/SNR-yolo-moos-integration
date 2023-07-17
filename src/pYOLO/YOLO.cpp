@@ -93,9 +93,9 @@ static std::atomic<YOLOBox> g_mob_box{};
 static void CoordsFIFOThread()
 {
   const std::string input_source = "0";
-  const std::string weights = "yolov5s.pt";
+  const std::string weights = "src/pYOLO/yolo/custom_models/best.pt";
   const std::string python = "/Users/shauryasen/moos-ivp-shaurya/.venv/bin/python3";
-  const std::string dir = "/Users/shauryasen/moos-ivp-shaurya/src/pYOLO/yolo/";
+  const std::string dir = "src/pYOLO/yolo";
   const std::string python_script = dir + "detect.py";
   const std::string requirements = dir + "requirements.txt";
 
@@ -150,8 +150,8 @@ bool YOLO::Iterate()
   mob_box = g_mob_box.load();
   
   bool detected = mob_box.GetAgeSeconds() < MAX_FIFO_AGE;
-  Notify("MOB_X", mob_box.BoxX());
-  Notify("MOB_Y", mob_box.BoxY());
+  Notify("MOB_BOX_X", mob_box.BoxX());
+  Notify("MOB_BOX_Y", mob_box.BoxY());
   Notify("MOB_DETECTED", detected);
   Notify("MOB_AGE", mob_box.GetAgeSeconds());
 
