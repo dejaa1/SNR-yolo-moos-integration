@@ -126,7 +126,8 @@ void NewGetCoords(bool &found_bool, int & class_val, float & conf, int & x, int 
         iss >> class_val >> conf >> x >> y;
         if (class_val == LIFEVEST_CLASS) {
         found_bool = true;
-        lastTrueTime = std::chrono::steady_clock::now();
+        cout << "BRUHHHHH WE IN THE BOOL CHSANGER NOW" << endl;
+        
         //std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
         }
         else{
@@ -175,7 +176,7 @@ bool YOLO::Iterate()
 {
   AppCastingMOOSApp::Iterate(); 
   // Do your thing here!
-    
+    lastTrueTime = std::chrono::steady_clock::now();
     NewGetCoords(found, class_label, confidence, mob_box_x, mob_box_y);
     /// if difff btwen tlast and now > 500 moiloise then detected = flase
 std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
