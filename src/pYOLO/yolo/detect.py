@@ -177,8 +177,11 @@ def run(
                         with open(f'{txt_path}.txt', 'a') as f:
                             f.write(('%g ' * len(line)).rstrip() % line + '\n')
                          # reformat to x1y1x2y2
-                         
-                        print(int(cls), int(xyxy[0].item()), int(xyxy[1].item()), int(xyxy[2].item()), int(xyxy[3].item()), flush=True)  # label format)
+                        ## Scale pixel values to 1024 x 720 pixels
+                        ### class, x1, y1, x2, y2
+                        x_scaler = 1024/640
+                        y_scaler = 720/480
+                        print(int(cls), int(xyxy[0].item()*x_scaler), int(xyxy[1].item()*y_scaler), int(xyxy[2].item()*x_scaler), int(xyxy[3].item()*y_scaler), flush=True)  # label format)
 
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
