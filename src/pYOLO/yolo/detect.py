@@ -86,11 +86,11 @@ def run(
     
     #############################################
                             
-    fifo_path = "src/pYOLO/yolo/pipe/yolo_fifo"
-    fifo_abs_path = "/home/adeja/CompVision/repos/SNR-yolo-moos-integration/src/pYOLO/yolo/pipe/yolo_fifo"
+    # fifo_path = "src/pYOLO/yolo/pipe/yolo_fifo"
+    # fifo_abs_path = "/home/adeja/CompVision/repos/SNR-yolo-moos-integration/src/pYOLO/yolo/pipe/yolo_fifo"
     
-    if not os.path.exists(fifo_path):
-        os.mkfifo(fifo_path)
+    # if not os.path.exists(fifo_path):
+    #     os.mkfifo(fifo_path)
 
     #print("this is the fifo path: ", fifo_path)
     
@@ -194,14 +194,14 @@ def run(
                         #     fifo.flush()
 
   #########################################################################################################################################################################                      
-                    if output_moos:
-                        xyxy_list = torch.tensor(xyxy).view(1, 4).view(-1).tolist()
-                        coords_line = str(int(cls)) + " " + str(float(conf)) + " " + str(int((xyxy_list[0] + xyxy_list[2]) / 2)) + " " + str(int(xyxy_list[3]))
-                        with open(fifo_path, "w") as fifo:
+                    # if output_moos:
+                    #     xyxy_list = torch.tensor(xyxy).view(1, 4).view(-1).tolist()
+                    #     coords_line = str(int(cls)) + " " + str(float(conf)) + " " + str(int((xyxy_list[0] + xyxy_list[2]) / 2)) + " " + str(int(xyxy_list[3]))
+                    #     with open(fifo_path, "w") as fifo:
                             
-                            fifo.write(coords_line + "\n")
+                    #         fifo.write(coords_line + "\n")
                             
-                            fifo.flush()
+                    #         fifo.flush()
                         
  #############################################################################################################################################################################                       
 
