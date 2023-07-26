@@ -8,6 +8,7 @@
 *.alog
 *.blog
 *.ylog
+*.jpg
 
 # allow
 !/CMakeLists.txt

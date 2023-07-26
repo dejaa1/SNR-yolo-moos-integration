@@ -1,9 +1,0 @@
-//------------------------------------------------
-// pLocationCalculation config block
-
-ProcessConfig = pLocationCalculation
-{
-   AppTick   = 4
-   CommsTick = 4
-}
-

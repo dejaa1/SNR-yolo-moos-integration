@@ -15,12 +15,9 @@ INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS})
 #============================================================================
 # List the subdirectories to build...
 #============================================================================
-ADD_SUBDIRECTORY(lib_behaviors-test)
-ADD_SUBDIRECTORY(pExampleApp)
-ADD_SUBDIRECTORY(pXRelayTest)
-ADD_SUBDIRECTORY(pLocationCalculation)
-ADD_SUBDIRECTORY(pOdometry)
-ADD_SUBDIRECTORY(pYOLO)
+# ADD_SUBDIRECTORY(behaviors_folder)
+ADD_SUBDIRECTORY(pHomography)
+ADD_SUBDIRECTORY(pObjectDetection)
 ##############################################################################
 #                           END of CMakeLists.txt
 ##############################################################################

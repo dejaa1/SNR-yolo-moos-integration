@@ -32,7 +32,7 @@ find_package(MOOS 10.0)
 INCLUDE_DIRECTORIES(${MOOS_INCLUDE_DIRS})
 
 #=======================================================================
-# Find the "moos-ivp" base directory
+# Find the "moos-ivp" base directory   
 #=======================================================================
 
 # Search for the moos-ivp folder
@@ -93,6 +93,8 @@ ELSE( ${WIN32} )
          SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" -C++11)
       ENDIF( WALL_ON)
    ELSE(CMAKE_COMPILER_IS_GNUCXX)
+
+   ### TODO ADD SET for linking zeromq in compilation and an installation check
     
    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
