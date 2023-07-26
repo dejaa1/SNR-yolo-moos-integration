@@ -1,5 +1,5 @@
 # SNR-yolo-moos-integration
-OverView: Using yolo object detection and homography to localize people overboard for automonous USV's search and rescue missions with ntegtration in moos-ivp middleware
+OverView: Using yolo object detection and homography to localize people overboard for automonous USV's search and rescue missions with integration in moos-ivp middleware
 
 # Custom Maritime Search and Rescue Dataset
 
