@@ -3,7 +3,7 @@ OverView: Using yolo object detection and homography to localize people overboar
 
 # Custom Maritime Search and Rescue Dataset
 
-This repository contains a custom Maritime Search and Rescue (SNR) dataset, specifically curated for object detection tasks using the YOLOv5 model. Additionally, the repository includes a MOOS-ivp wrapper for YOLOv5 to facilitate seamless integration with the MOOS-ivp framework.
+This repository contains a custom Maritime Search and Rescue (SNR) dataset, specifically curated for object detection tasks using the YOLOv5 model. Additionally, the repository includes a MOOS-ivp wrapper for YOLOv5 and for OpenCV homography to facilitate seamless integration with the MOOS-ivp framework.
 
 ## Dataset
 
