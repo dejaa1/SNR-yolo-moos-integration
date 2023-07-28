@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/adeja/**"
+                "/home/adeja/**",
+                "${workspaceFolder}/src/pObjectDetection"
             ],
             "defines": [],
             "cStandard": "c17",

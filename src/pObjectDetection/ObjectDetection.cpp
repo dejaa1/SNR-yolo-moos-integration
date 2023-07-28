@@ -8,7 +8,7 @@
 #include <iterator>
 #include "MBUtils.h"
 #include "ACTable.h"
-#include "YOLO.h"
+#include "ObjectDetection.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -31,22 +31,22 @@ using namespace std;
 
 #define MAX_FIFO_AGE 0.5
 
-YOLO::YOLO()
+ObjectDetection::ObjectDetection()
 {
-  mob_box = YOLOBox();
+  mob_box = ObjBox();
 }
 
 //---------------------------------------------------------
 // Destructor
 
-YOLO::~YOLO()
+ObjectDetection::~ObjectDetection()
 {
 }
 
 //---------------------------------------------------------
 // Procedure: OnNewMail()
 
-bool YOLO::OnNewMail(MOOSMSG_LIST &NewMail)
+bool ObjectDetection::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   AppCastingMOOSApp::OnNewMail(NewMail);
 
@@ -79,7 +79,7 @@ bool YOLO::OnNewMail(MOOSMSG_LIST &NewMail)
 //---------------------------------------------------------
 // Procedure: OnConnectToServer()
 
-bool YOLO::OnConnectToServer()
+bool ObjectDetection::OnConnectToServer()
 {
   registerVariables();
   return (true);
@@ -90,7 +90,7 @@ bool YOLO::OnConnectToServer()
 //            handle the incoming data from the python YOLO detector
 static std::mutex g_mob_box_mutex;
 
-static YOLOBox g_mob_box{};
+static ObjBox g_mob_box{};
 
 static void CoordsFIFOThread()
 {
@@ -120,18 +120,23 @@ static void CoordsFIFOThread()
     std::istringstream fifo_data = std::istringstream(data);
 
     int label, x1, y1, x2, y2;
-    if (fifo_data >> label >> x1 >> y1 >> x2 >> y2) {
-        YOLOBox fifo_box = YOLOBox(label, x1, y1, x2, y2);
+    double conf;
+    if (fifo_data >> label >> conf >> x1 >> y1 >> x2 >> y2) {
+        ObjBox fifo_box = ObjBox(label, conf, x1, y1, x2, y2);
 
         switch (fifo_box.GetLabel())
         {
         case MOB_CLASS:
+        {
           const std::lock_guard<std::mutex> lock{g_mob_box_mutex};
           g_mob_box = fifo_box;
           break;
-        default:
+        }
+        default: 
+        {
           std::cerr << "Unknown Classification Label: " << fifo_box.GetLabel() << std::endl;
           break;
+        }
       }
     } else {
       std::cerr << "Incorrect Formatting from FIFO Data: " << data << std::endl;
@@ -145,7 +150,7 @@ static void CoordsFIFOThread()
 // Procedure: Iterate()
 //            happens AppTick times per second
 
-bool YOLO::Iterate()
+bool ObjectDetection::Iterate()
 {
   AppCastingMOOSApp::Iterate();
 
@@ -167,7 +172,7 @@ bool YOLO::Iterate()
 // Procedure: OnStartUp()
 //            happens before connection is open
 
-bool YOLO::OnStartUp()
+bool ObjectDetection::OnStartUp()
 {
   AppCastingMOOSApp::OnStartUp();
 
@@ -211,7 +216,7 @@ bool YOLO::OnStartUp()
 //---------------------------------------------------------
 // Procedure: registerVariables()
 
-void YOLO::registerVariables()
+void ObjectDetection::registerVariables()
 {
   AppCastingMOOSApp::RegisterVariables();
   // Register("FOOBAR", 0);
@@ -220,7 +225,7 @@ void YOLO::registerVariables()
 //------------------------------------------------------------
 // Procedure: buildReport()
 
-bool YOLO::buildReport()
+bool ObjectDetection::buildReport()
 {
   // m_msgs << "============================================" << endl;
   // m_msgs << "File:                                       " << endl;

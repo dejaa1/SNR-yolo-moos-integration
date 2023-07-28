@@ -102,7 +102,7 @@ bool LocationCalculation::OnNewMail(MOOSMSG_LIST &NewMail)
         Notify ("MOB_POSITION_X", 
           current_x + sqrt( (x * x) + (y * y) )  * cos(90 - (current_heading + tan(x / y)))
         );
-        Notify("MOB_position_Y", 
+        Notify("MOB_POSITION_Y", 
           current_y + sqrt( (x * x) + (y * y) )  * sin(90 - (current_heading + tan(x / y)))
         );
 

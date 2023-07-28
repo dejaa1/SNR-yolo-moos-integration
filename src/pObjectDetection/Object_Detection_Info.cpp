@@ -34,15 +34,15 @@ void showHelpAndExit()
 {
   blk("                                                                ");
   blu("=============================================================== ");
-  blu("Usage: pYOLO file.moos [OPTIONS]                   ");
+  blu("Usage: pObjectDetection file.moos [OPTIONS]                   ");
   blu("=============================================================== ");
   blk("                                                                ");
   showSynopsis();
   blk("                                                                ");
   blk("Options:                                                        ");
   mag("  --alias","=<ProcessName>                                      ");
-  blk("      Launch pYOLO with the given process name         ");
-  blk("      rather than pYOLO.                           ");
+  blk("      Launch pObjectDetection with the given process name         ");
+  blk("      rather than pObjectDetection.                           ");
   mag("  --example, -e                                                 ");
   blk("      Display example MOOS configuration block.                 ");
   mag("  --help, -h                                                    ");
@@ -66,10 +66,10 @@ void showExampleConfigAndExit()
 {
   blk("                                                                ");
   blu("=============================================================== ");
-  blu("pYOLO Example MOOS Configuration                   ");
+  blu("pObjectDetection Example MOOS Configuration                   ");
   blu("=============================================================== ");
   blk("                                                                ");
-  blk("ProcessConfig = pYOLO                              ");
+  blk("ProcessConfig = pObjectDetection                              ");
   blk("{                                                               ");
   blk("  AppTick   = 4                                                 ");
   blk("  CommsTick = 4                                                 ");
@@ -87,7 +87,7 @@ void showInterfaceAndExit()
 {
   blk("                                                                ");
   blu("=============================================================== ");
-  blu("pYOLO INTERFACE                                    ");
+  blu("pObjectDetection INTERFACE                                    ");
   blu("=============================================================== ");
   blk("                                                                ");
   showSynopsis();
@@ -109,7 +109,7 @@ void showInterfaceAndExit()
 
 void showReleaseInfoAndExit()
 {
-  showReleaseInfo("pYOLO", "gpl");
+  showReleaseInfo("pObjectDetection", "gpl");
   exit(0);
 }
 

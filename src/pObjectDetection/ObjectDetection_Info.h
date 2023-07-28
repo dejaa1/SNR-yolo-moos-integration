@@ -5,8 +5,8 @@
 /*   DATE: Dececmber 29th, 1963                                 */
 /****************************************************************/
 
-#ifndef YOLO_INFO_HEADER
-#define YOLO_INFO_HEADER
+#ifndef OBJECTDETECTION_INFO_HEADER
+#define OBJECTDETECTION_INFO_HEADER
 
 void showSynopsis();
 void showHelpAndExit();

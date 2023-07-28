@@ -43,9 +43,9 @@ int main(int argc, char *argv[])
   cout << "ObjectDetection launching as " << run_command << endl;
   cout << termColor() << endl;
 
-  ObjectDetection OBJDET;
+  ObjectDetection ObjectDetection;
 
-  OBJDET.Run(run_command.c_str(), mission_file.c_str());
+  ObjectDetection.Run(run_command.c_str(), mission_file.c_str());
   
   return(0);
 }
