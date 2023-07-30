@@ -1,0 +1,284 @@
+ServerHost = localhost
+ServerPort = 9011
+Community  = ZACH
+
+MOOSTimeWarp = 1
+
+//Lake Popolopen
+LatOrigin  = 41.34928
+LongOrigin = -74.063645
+
+ 
+
+
+//------------------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB             @ NewConsole = false
+  Run = uProcessWatch      @ NewConsole = false
+  Run = pShare             @ NewConsole = false
+  Run = pYOLO              @ NewConsole = true
+  Run = pLocationCalculation @ NewConsole = false
+  Run = pNodeReporter      @ NewConsole = false
+  Run = pMarinePID         @ NewConsole = false
+  Run = pHelmIvP           @ NewConsole = false
+  Run = pHostInfo          @ NewConsole = false
+  Run = uFldNodeBroker     @ NewConsole = false
+  Run = pDeadManPost       @ NewConsole = false
+  Run = uFldMessageHandler @ NewConsole = false
+  Run = pNodeReportParse   @ NewConsole = false
+  Run = iM1_8              @ NewConsole = false
+}
+
+//------------------------------------------------
+// iM300 config block
+
+ProcessConfig = iM1_8
+{
+  //AppTick   = 10
+  //CommsTick = 10
+
+  ip_addr=192.168.1.81  // frontseat IP address
+  port=8003      // default port number for Clearpath Heron
+  comms_type=client
+
+  //MAX_RUDDER     = 30.0       // Maximum Rudder Angle  [+/- deg]
+  //MAX_THRUST     = 100.0      // Maximum Thrust        [+/- %]
+  //DRIVE_MODE     = "normal"   // Drive Mode ["normal" or "aggro"]
+
+  //max_appcast_events = 8          //default=8
+  //max_appcast_run_warnings = 10   //default=10
+
+  ignore_msg = $DEBUG, $OIVCQ                                   
+  ignore_msg = $PSEAD, $PSEAE
+  ignore_msg = $PSEAG, $PSEAJ
+  ignore_msg = $PSEAF, $VCGLL
+  ignore_msg = $PTQM0, $PTQM1
+  ignore_msg = $PSEAX, $PSEAY
+}
+
+
+
+//---------------------------------------------------------
+ProcessConfig = pShare
+{
+  AppTick    = 2
+  CommsTick  = 2
+
+  input = route =  localhost:9311
+//  input = route =  multicast_7
+}
+
+
+//------------------------------------------
+ProcessConfig = pDeadManPost
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  heartbeat_var   = HEARTBEAT
+  max_noheart     = 15
+  post_policy     = reset
+  active_at_start = false
+  deadflag        = DEPLOY = false
+ }
+
+
+//--------------------------------------------------
+ProcessConfig = pLogger
+{
+  AppTick     = 10
+  CommsTick   = 10
+
+  File    = C000_LOG_ZACH_ZACH
+  PATH    = /var/log/aquaticus
+  SyncLog   = true @ 0.2
+  AsyncLog   = true
+  FileTimeStamp = true
+
+  Log = IVPHELM_LIFE_EVENT @ 0 nosync
+
+  // Log it all!!!!!
+  LogAuxSrc = true
+  WildCardLogging = true
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+}
+
+
+//---------------------------------------
+ProcessConfig = pNodeReporter
+{
+  AppTick     = 2
+  CommsTick   = 2
+
+  vessel_type = kayak
+  group       = 
+  platform_color = 
+}
+
+
+//---------------------------------------
+ProcessConfig = pMarinePID
+{
+  AppTick    = 10
+  CommsTick  = 10
+
+  VERBOSE       = true
+  DEPTH_CONTROL = false
+  ACTIVE_START  = true
+
+  // Yaw PID controller (Set for M300)
+  YAW_PID_KP             = 0.35 
+  YAW_PID_KD             = 0.07 
+  YAW_PID_KI             = 0.0  
+  YAW_PID_INTEGRAL_LIMIT = 0.07 
+	
+  // Speed PID controller
+  SPEED_PID_KP           = 1.0
+  SPEED_PID_KD           = 0.0
+  SPEED_PID_KI           = 0.0
+  SPEED_PID_INTEGRAL_LIMIT = 0.07
+
+  // Maximums
+  MAXRUDDER  = 100 // 100
+  MAXTHRUST  = 84
+
+  // A non-zero SPEED_FACTOR overrides use of SPEED_PID
+  // Will set DESIRED_THRUST = DESIRED_SPEED * SPEED_FACTOR
+  //SPEED_FACTOR = 20
+  deprecated_ok = true
+}
+
+
+//---------------------------------------
+ProcessConfig = pHelmIvP
+{
+  AppTick    = 4
+  CommsTick  = 4
+  
+//  ivp_behavior_dirs = /home/mikey/moos-ivp-aquaticus/lib
+  Behaviors    = targ_ZACH.bhv
+  Verbose      = false
+  Domain       = course:0:359:360
+  Domain       = speed:0:1.5:26
+}
+
+
+//--------------------------------------------------
+ProcessConfig = pHostInfo
+{
+  AppTick     = 1
+  CommsTick   = 1
+
+//  DEFAULT_HOSTIP = localhost
+}
+
+
+//--------------------------------------------------
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  TRY_SHORE_HOST = pshare_route=192.168.1.200:9300
+
+
+  BRIDGE = src=VIEW_POLYGON
+  BRIDGE = src=VIEW_POINT
+  BRIDGE = src=VIEW_SEGLIST
+  BRIDGE = src=VIEW_CIRCLE
+  BRIDGE = src=AVDCOL_MODE
+  BRIDGE = src=FLAG_GRAB_REQUEST
+  BRIDGE = src=TAG_REQUEST
+  BRIDGE = src=APPCAST
+  BRIDGE = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  BRIDGE = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+
+  BRIDGE   = src=MOB_BOX_X
+  BRIDGE   = src=MOB_BOX_Y
+  BRIDGE   = src=MOB_CONF
+  BRIDGE   = src=MOB_DETECTED
+  BRIDGE   = src=RELATIVE_MOB_X
+  BRIDGE   = src=RELATIVE_MOB_Y
+  BRIDGE   = src=MOB_POSITION_X
+  BRIDGE   = src=MOB_POSITION_Y
+  BRIDGE   = src=VIEW_MARKER
+}
+
+
+//--------------------------------------------------
+ProcessConfig = uFldMessageHandler
+{
+  AppTick   = 3
+  CommsTick = 3
+
+  STRICT_ADDRESSING = true
+}
+
+
+//--------------------------------------------------------
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  ALLOW_RETRACTIONS = true
+
+  WATCH_ALL = true // default is true
+
+  NOWATCH = uMAC*
+  NOWATCH = uXMS*
+  NOWATCH = uPokeDB*
+
+  WATCH         = pNodeReporter
+  WATCH         = pMarinePID
+  WATCH         = pHelmIvP
+  // WATCH         = iM200
+  WATCH         = pShare
+  SUMMARY_WAIT  = 12
+}
+
+
+//------------------------------------------------------
+// uSimMarine Configuration Block  (Created from plugin)
+
+ProcessConfig = uSimMarine
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  START_POS = 0:0
+  PREFIX    = NAV
+
+  //rotate_speed = 0.012
+  //drift_x      = 0.0045
+
+  //thrust_map = -100:-2, 0:0, 20:1, 40:2, 60:3, 80:5, 100:5
+  //thrust_map = -100:-2, 0:0, 20:1, 40:2, 60:3, 80:5, 100:5
+
+  deprecated_ok = true
+}
+
+
+ProcessConfig = pNodeReportParse
+{
+  AppTick   = 4
+  CommsTick = 4
+}
+
+ProcessConfig = pYOLO
+{
+  AppTick = 16
+  CommsTick = 16
+}
+
+ProcessConfig = pLocationCalculation
+{
+  AppTick = 16
+  CommsTick = 16
+}
+

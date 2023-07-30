@@ -1,0 +1,45 @@
+initialize DEPLOY     = false
+initialize MOB_DETECTED = false
+
+set MODE     = ACTIVE {
+  DEPLOY     = true
+} INACTIVE
+
+set MODE     = LAWNMOWER {
+  MODE       = ACTIVE
+  MOB_DETECTED  = false
+}
+
+set MODE     = SKEEPING {
+  MODE       = ACTIVE
+  MOB_DETECTED  = true
+}
+
+Behavior = BHV_Waypoint
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = lawnmower               // example
+  pwt          = 100                   // default
+  condition    = MODE==LAWNMOWER      // example
+  updates      = TRANSIT_UPDATES       // example
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+  cycleflag = COMMS_NEEDED=true       // example
+  post_suffix = HENRY                   // example
+  speed = 1.2                     // default is zero
+
+  points = pts={$(CORNER_1):$(CORNER_2):$(CORNER_3):$(CORNER_4)}lane_width=15
+}
+
+Behavior = BHV_StationKeep
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = station-keep          // example
+  pwt          = 100                   // default
+  condition    = MODE==SKEEPING        // example
+
+  center_activate = true
+}

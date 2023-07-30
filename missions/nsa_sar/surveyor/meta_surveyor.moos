@@ -1,0 +1,68 @@
+ServerHost = localhost
+ServerPort = $(VPORT)
+Community  = $(RNAME)
+
+#include ../plug_origin_warp.moos
+
+//------------------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB             @ NewConsole = false
+  Run = uProcessWatch      @ NewConsole = false
+  Run = pShare             @ NewConsole = false
+  Run = pYOLO              @ NewConsole = true
+  Run = pLocationCalculation @ NewConsole = false
+  Run = pNodeReporter      @ NewConsole = false
+  Run = pMarinePID         @ NewConsole = false
+  Run = pHelmIvP           @ NewConsole = false
+  Run = pHostInfo          @ NewConsole = false
+  Run = uFldNodeBroker     @ NewConsole = false
+  Run = pDeadManPost       @ NewConsole = false
+  Run = uFldMessageHandler @ NewConsole = false
+  Run = pNodeReportParse   @ NewConsole = false
+  Run = iM1_8              @ NewConsole = false
+}
+
+#include plug_iM1_8.moos
+
+#include ../plug_pShare.moos
+
+#include ../plug_pDeadManPost.moos
+
+#include plug_pLogger.moos
+
+#include ../plug_pNodeReporter.moos
+
+#include plug_pMarinePID.moos
+
+#include plug_pHelmIvP.moos
+
+#include ../plug_pHostInfo.moos
+
+#include ../plug_uFldNodeBroker.moos
+
+#include ../plug_uFldMessageHandler.moos
+
+#include plug_uProcessWatch.moos
+
+#include plug_uSimMarine.moos
+
+ProcessConfig = pNodeReportParse
+{
+  AppTick   = 4
+  CommsTick = 4
+}
+
+ProcessConfig = pYOLO
+{
+  AppTick = 16
+  CommsTick = 16
+}
+
+ProcessConfig = pLocationCalculation
+{
+  AppTick = 16
+  CommsTick = 16
+}

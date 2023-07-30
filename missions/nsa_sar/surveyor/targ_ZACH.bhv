@@ -1,0 +1,43 @@
+initialize DEPLOY     = false
+initialize FOUND_OBJ  = false
+
+set MODE     = ACTIVE {
+  DEPLOY     = true
+} INACTIVE
+
+set MODE     = LAWNMOWER {
+  MODE       = ACTIVE
+  FOUND_OBJ = false
+} SKEEPING
+
+Behavior = BHV_Waypoint
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = lawnmower               // example
+  pwt          = 100                   // default
+  condition    = MODE==ACTIVE:LAWNMOWER      // example
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+  speed = 1                     // default is zero
+  capture_radius = 3
+  slip_radius = 7
+  lead = 10
+  lead_damper = 5
+  repeat = forever
+
+  points = format=lawnmower, x=240, y=120, width=40, height=90, lane_width=10
+}
+
+Behavior = BHV_StationKeep
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = station-keep          // example
+  pwt          = 100                   // default
+  condition    = MODE==ACTIVE:SKEEPING        // example
+
+  center_activate = true
+}
+

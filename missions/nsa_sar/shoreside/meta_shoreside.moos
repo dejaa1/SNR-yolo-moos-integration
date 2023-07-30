@@ -1,0 +1,172 @@
+//*******************************************************
+// ShoreSide Configuration File
+
+ServerHost = localhost
+ServerPort = $(SPORT)
+Community  = $(SNAME)
+
+#include ../plug_origin_warp.moos
+
+//--------------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = uProcessWatch   @ NewConsole = false
+  Run = pMarineViewer   @ NewConsole = false
+  Run = uTimerScript    @ NewConsole = false
+  Run = pHostInfo       @ NewConsole = false
+  Run = pShare          @ NewConsole = false
+  Run = uFldShoreBroker @ NewConsole = false
+  Run = uFldNodeComms   @ NewConsole = false
+}
+
+//---------------------------------------------------------
+// pShare Configuration Block
+
+ProcessConfig = pShare
+{
+  AppTick    = 2
+  CommsTick  = 2
+
+  input = route =  localhost:$(SHARE_LISTEN)
+//  input = route =  multicast_7
+}
+
+//--------------------------------------------------
+// ufldnodecomms Configuration Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick       = 2
+  CommsTick     = 2
+
+  comms_range      = 5000
+  critical_range   = 25
+
+  min_msg_interval = 0
+  max_msg_length   = 10000
+  groups           = false
+
+  view_node_rpt_pulses = false
+}
+
+
+//--------------------------------------------------
+// uFldShoreBroker Configuration Block
+ProcessConfig = uFldShoreBroker
+{
+  AppTick       = 1
+  CommsTick     = 1
+
+  // Note: [QBRIDGE = FOO]  is shorthand for
+  //       [BRIDGE = src=FOO_$V,  alias=FOO] and
+  //       [BRIDGE = src=FOO_ALL, alias=FOO]
+
+  qbridge  = DEPLOY, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE, APPCAST_REQ
+
+  bridge   = src=HELM_MAP_CLEAR, alias=HELM_MAP_CLEAR
+  bridge   = src=MULTI_NOTIFY
+  bridge   = src=FOUND_OBJ
+  //bridge   = src=VIEW_MARKER
+
+  qbridge = UFMG_HEARTBEAT
+}
+
+
+//--------------------------------------------------
+ProcessConfig = pHostInfo
+{
+  AppTick     = 2
+  CommsTick   = 2
+}
+
+//--------------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick    = 4
+  CommsTick  = 4
+
+  //TIFF_FILE            = forrest19.tif
+  TIFF_FILE            = ../popolopen.tif
+  set_pan_x            = 0
+  set_pan_y            = 0
+  zoom                 = 1
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  circle_viewable_all = true
+
+  appcast_viewable = true
+  appcast_color_scheme = indigo
+
+  scope = FLAG_GRAB_REPORT
+  scope = NODE_BROKER_PING
+  scope = DEPLOY_ALL
+
+  action = AQUATICUS_GAME_ALL = play
+  action = AQUATICUS_GAME_ALL = pause
+  action = AQUATICUS_GAME_ALL = stop
+
+  button_one   = DEPLOY  # DEPLOY_ALL=true
+  button_one   = MOOS_MANUAL_OVERRIDE_ALL=false
+  button_one   = RETURN_ALL=false # STATION_KEEP_ALL=false
+
+  button_two = PAUSE # DEPLOY_ALL=false
+  button_two = MOOS_MANUAL_OVERRIDE_ALL=true
+
+  button_three = FALSEREPORT # FOUND_OBJ=false
+  button_three = VIEW_MARKER="type=diamond,x=0,y=0,scale=2,color=yellow,width=2"
+
+//op_vertex = x=194.76, y=75.68, lwidth=1,lcolor=yellow,looped=true,group=moa
+//op_vertex = x=234.72, y=178.16, lwidth=1,lcolor=yellow,looped=true,group=moa
+//op_vertex = x=285.96, y=157.88, lwidth=1,lcolor=yellow,looped=true,group=moa
+//op_vertex = x=246.00, y=55.70, lwidth=1,lcolor=yellow,looped=true,group=moa
+
+  cmd = label=DEPLOY, var=DEPLOY,  sval=true,  receivers=all:sar_bot
+  cmd = label=DEPLOY, var=MOOS_MANUAL_OVERRIDE, sval=false, receivers=all:sar_bot
+  cmd = label=DEPLOY, var=RETURN,  sval=false,  receivers=all:sar_bot
+}
+
+//--------------------------------------------------------
+// uProcessWatch Configuration Block
+
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  allow_retractions = true
+
+  watch_all = true      // default is true
+
+  nowatch = uXMS*
+  nowatch = uPokeDB*
+
+  summary_wait = 10
+}
+
+//----------------------------------------
+ProcessConfig = pTimeWatch
+{
+  AppTick   = 4
+  CommsTick = 4
+  
+  watch_var = NODE_REPORT
+
+  threshhold = 30
+  //local_offset = 30
+}
+
+ProcessConfig = uTimerScript
+{
+  AppTick = 4
+  CommsTick = 4
+
+  condition = MOB_DETECTED=1
+
+  event = var=FOUND_OBJ, val=true, time=0, amt=1
+  upon_awake = restart
+}
