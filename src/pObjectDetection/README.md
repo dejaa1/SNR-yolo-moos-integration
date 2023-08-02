@@ -5,7 +5,7 @@ This repository contains the source code for the Object Detection App, a compone
 The Object Detection App is responsible for operating the robot's camera and executing the YOLO detection script to scan the surroundings for a Man Overboard (MOB). Upon detecting an MOB, the app publishes the pixel coordinates of the MOB within the image to the MOOSDB. Other components of the system can then retrieve this data to find the relative position of the MOB.
 
 ## Code Structure
-The main file of the Object Detection App is ObjectDetection.cpp. This file contains the implementation of the ObjectDetection class, which is responsible for the main functionality of the app.
+The main file of the Object Detection App is `ObjectDetection.cpp`. This file contains the implementation of the ObjectDetection class, which is responsible for the main functionality of the app.
 
 ### The Object Detection App publishes:
 - `MOB_BOX_X`: The x-coordinate of the bottom middle of the bounding box in the
