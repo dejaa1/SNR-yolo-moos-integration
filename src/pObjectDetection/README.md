@@ -8,13 +8,13 @@ The Object Detection App is responsible for operating the robot's camera and exe
 The main file of the Object Detection App is ObjectDetection.cpp. This file contains the implementation of the ObjectDetection class, which is responsible for the main functionality of the app.
 
 ### The Object Detection App publishes:
-- MOB_BOX_X: The x-coordinate of the bottom middle of the bounding box in the
+- `MOB_BOX_X`: The x-coordinate of the bottom middle of the bounding box in the
 image where a MOB (Man Overboard) is detected.
-- MOB_BOX_Y: The y-coordinate of the bottom middle of the bounding box in the
+- `MOB_BOX_Y`: The y-coordinate of the bottom middle of the bounding box in the
 image where a MOB is detected.
-- MOB_DETECTED: A boolean value indicates whether a MOB is detected (true) or not
+- `MOB_DETECTED`: A boolean value indicates whether a MOB is detected (true) or not
 (false).
-- MOB_AGE: How long in seconds it has been since a MOB has been detected.
+- `MOB_AGE`: How long in seconds it has been since a MOB has been detected.
 
 To use the Object Detection App, you need to have a running MOOSDB and a robot with a camera that the app can control.
 
